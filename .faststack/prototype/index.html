@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KlipSync · 原型导航</title>
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link href="https://fonts.bunny.net/css?family=geist:300,400,500,600,700|geist-mono:400,500|inter:400,500,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+<style>
+  .intro { max-width: 720px; margin: 0 auto; padding: var(--s-16) var(--s-8) var(--s-8); }
+  .intro h1 { font-size: 44px; font-weight: 600; letter-spacing: -0.035em; line-height: 1.05; }
+  .intro h1 .accent { color: var(--c-accent); font-weight: 500; }
+  .intro p { margin-top: var(--s-4); color: var(--c-text-mute); font-size: 16px; line-height: 1.55; }
+  .intro .meta {
+    margin-top: var(--s-6);
+    display: flex; gap: var(--s-3); flex-wrap: wrap;
+    font-family: var(--f-mono); font-size: 12px; color: var(--c-text-dim);
+  }
+  .intro .meta span { padding: 3px 10px; border: 1px solid var(--c-line); border-radius: var(--r-pill); }
+
+  .page-grid {
+    max-width: 1040px; margin: 0 auto; padding: var(--s-8);
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--s-4);
+  }
+  .page-card {
+    background: var(--c-bg-raise);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-card);
+    padding: var(--s-6);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color var(--t-fast), transform var(--t-fast);
+    display: flex; flex-direction: column; gap: var(--s-2);
+  }
+  .page-card:hover { border-color: var(--c-accent); text-decoration: none; transform: translateY(-1px); }
+  .page-card .pid { font-family: var(--f-mono); font-size: 11px; color: var(--c-accent-strong); font-weight: 500; }
+  .page-card h3 { font-size: 17px; font-weight: 600; }
+  .page-card .desc { color: var(--c-text-mute); font-size: 13px; line-height: 1.5; }
+  .page-card .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: var(--s-2); }
+</style>
+</head>
+<body>
+
+<div class="intro">
+  <div style="display:flex; align-items:center; gap: var(--s-3); margin-bottom: var(--s-6);">
+    <div class="mark" style="width: 40px; height: 40px; border-radius: 12px; background: var(--c-accent); color: #FFFFFF; display: grid; place-items: center; font-family: var(--f-head); font-weight: 700; font-size: 20px; letter-spacing: -0.04em;">K</div>
+    <div>
+      <div style="font-family: var(--f-head); font-weight: 600; font-size: 18px;">KlipSync</div>
+      <div class="mono" style="color: var(--c-text-dim); font-size: 11px;">prototype · v0.1</div>
+    </div>
+    <div style="flex:1;"></div>
+    <button class="icon-btn" data-toggle-theme title="切换主题">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+    </button>
+  </div>
+
+  <h1>原型导航 ·<br/><span class="accent">8 个页面</span>覆盖完整流程</h1>
+  <p>本页是静态原型的入口索引。每个页面都可直接在浏览器打开、独立验收。核心是 <strong style="color:var(--c-text);">P-004 主工作台</strong>，其他页面围绕它展开。</p>
+  <div class="meta">
+    <span>Crisp Canvas</span>
+    <span>Soft Violet CTA</span>
+    <span>Pastel Badges</span>
+    <span>Geist · Inter · Geist Mono</span>
+    <span>浅色 / 深色双主题</span>
+  </div>
+</div>
+
+<div class="page-grid">
+
+  <a class="page-card" href="P-004-workbench.html">
+    <span class="pid">P-004 · 核心页面</span>
+    <h3>主工作台</h3>
+    <div class="desc">双栏布局：左剪贴板列表 + 右编辑器。含工具栏、附件网格、二维码面板、清空/删除二次确认。</div>
+    <div class="tags">
+      <span class="badge pinned"><span class="b-dot"></span>核心</span>
+      <span class="badge confirmed"><span class="b-dot"></span>多端同步</span>
+    </div>
+  </a>
+
+  <a class="page-card" href="P-001-setup.html">
+    <span class="pid">P-001</span>
+    <h3>首次部署引导</h3>
+    <div class="desc">系统无管理员时强制落地，创建 Admin 账号后自动登录进入工作台。</div>
+    <div class="tags">
+      <span class="badge info"><span class="b-dot"></span>一次性</span>
+    </div>
+  </a>
+
+  <a class="page-card" href="P-002-login.html">
+    <span class="pid">P-002</span>
+    <h3>登录页</h3>
+    <div class="desc">用户名 + 密码 + 记住我。扫码进入但未登录时也会落到这里。</div>
+    <div class="tags">
+      <span class="badge confirmed"><span class="b-dot"></span>认证</span>
+    </div>
+  </a>
+
+  <a class="page-card" href="P-003-force-reset.html">
+    <span class="pid">P-003</span>
+    <h3>强制改密</h3>
+    <div class="desc">初始密码或管理员重置后的密码必须在首次登录立即修改。除登出外无其他跳出路径。</div>
+    <div class="tags">
+      <span class="badge progress"><span class="b-dot"></span>must_reset</span>
+    </div>
+  </a>
+
+  <a class="page-card" href="P-005-settings.html">
+    <span class="pid">P-005</span>
+    <h3>个人设置</h3>
+    <div class="desc">账号信息、修改密码、登出。管理员还能在此跳入管理面板。</div>
+    <div class="tags">
+      <span class="badge info"><span class="b-dot"></span>自助</span>
+    </div>
+  </a>
+
+  <a class="page-card" href="P-006-admin-users.html">
+    <span class="pid">P-006 · 仅 Admin</span>
+    <h3>用户管理</h3>
+    <div class="desc">表格 + 新增用户 + 重置密码 + 删除用户（需输入用户名二次确认）。无法查看任何剪贴板内容。</div>
+    <div class="tags">
+      <span class="badge pinned"><span class="b-dot"></span>Admin only</span>
+    </div>
+  </a>
+
+  <a class="page-card" href="P-007-admin-system.html">
+    <span class="pid">P-007 · 仅 Admin</span>
+    <h3>系统设置</h3>
+    <div class="desc">附件大小上限配置、存储概览、版本信息。</div>
+    <div class="tags">
+      <span class="badge pinned"><span class="b-dot"></span>Admin only</span>
+    </div>
+  </a>
+
+  <a class="page-card" href="P-008-not-found.html">
+    <span class="pid">P-008</span>
+    <h3>无权访问状态页</h3>
+    <div class="desc">扫码越权、URL 失效、对象已删除时的软落地页。</div>
+    <div class="tags">
+      <span class="badge rejected"><span class="b-dot"></span>错误兜底</span>
+    </div>
+  </a>
+
+</div>
+
+<div style="max-width: 720px; margin: var(--s-8) auto var(--s-16); padding: 0 var(--s-8); color: var(--c-text-dim); font-size: 12px; text-align: center;">
+  见 <a href="../design.md">design.md</a> 的规范文档 ·
+  <a href="../design-preview.html">design-preview.html</a> 的独立色彩/组件预览页 ·
+  <a href="../product.md">product.md</a> 的产品文档（P-xxx 页面定义）
+</div>
+
+<script src="interactions.js"></script>
+</body>
+</html>

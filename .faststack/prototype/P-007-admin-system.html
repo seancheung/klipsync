@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>系统设置 · KlipSync</title>
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link href="https://fonts.bunny.net/css?family=geist:300,400,500,600,700|geist-mono:400,500|inter:400,500,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <a href="P-004-workbench.html" style="display:flex;align-items:center;gap:var(--s-3);color:inherit;text-decoration:none;">
+        <div class="mark">K</div>
+        <div class="name">KlipSync</div>
+      </a>
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <button class="icon-btn" data-toggle-theme title="切换主题">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </button>
+      <div class="user-chip">
+        <span class="avatar">S</span>
+        <span>sean</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1>系统设置</h1>
+        <div class="desc">全局系统参数配置</div>
+      </div>
+      <a href="P-006-admin-users.html" class="btn btn-ghost btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        返回用户管理
+      </a>
+    </div>
+
+    <div class="section-title">上传限制</div>
+    <div class="card">
+      <div class="card-body">
+        <form onsubmit="event.preventDefault(); klipsyncToast('系统设置已更新', 'success');">
+          <div class="field">
+            <label for="lim">单文件大小上限</label>
+            <div class="form-row" style="align-items: stretch;">
+              <input class="input" id="lim" type="number" min="1" value="10" style="max-width: 180px;" />
+              <div style="display:flex; align-items:center; padding: 0 var(--s-3); color: var(--c-text-mute); font-family: var(--f-mono); font-size: 13px;">MB</div>
+            </div>
+            <div class="help">≥ 1 MB · 新上限对此后上传生效，历史附件不受影响</div>
+          </div>
+
+          <div class="alert info" style="margin-top: var(--s-4);">
+            <span class="dot"></span>
+            <div class="txt">
+              <strong>当前有效上限：10 MB</strong>
+              <small>超过上限的文件会在选择 / 拖放阶段被前置拒绝，不进入上传队列。</small>
+            </div>
+          </div>
+
+          <div style="margin-top: var(--s-4);">
+            <button type="submit" class="btn btn-primary">保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="section-title">公开访问</div>
+    <div class="card">
+      <div class="card-body">
+        <form onsubmit="event.preventDefault(); klipsyncToast('系统设置已更新', 'success');">
+          <div class="field">
+            <label for="base-url">公开访问基址</label>
+            <input class="input" id="base-url" type="url" placeholder="https://klipsync.example.com" value="" />
+            <div class="help">http(s):// 开头，不含末尾 / · 留空则自动使用当前请求地址</div>
+          </div>
+
+          <div class="alert info" style="margin-top: var(--s-4);">
+            <span class="dot"></span>
+            <div class="txt">
+              <strong>当前生效基址</strong>
+              <small>（未设置 · 自动使用当前请求的访问地址）</small>
+            </div>
+          </div>
+
+          <div style="margin-top: var(--s-4);">
+            <button type="submit" class="btn btn-primary">保存</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="section-title">存储概览</div>
+    <div class="card">
+      <div class="card-body">
+        <div class="form-row" style="justify-content: space-between; flex-wrap: wrap; gap: var(--s-4);">
+          <div>
+            <div class="mono" style="color: var(--c-text-dim); font-size: 11px;">NAS 挂载卷</div>
+            <div class="mono" style="font-size: 13px; margin-top: 4px;">/volume1/docker/klipsync/data</div>
+          </div>
+          <div>
+            <div class="mono" style="color: var(--c-text-dim); font-size: 11px;">已用 / 可用</div>
+            <div style="font-family: var(--f-head); font-weight: 600; font-size: 17px; margin-top: 4px;">43.7 MB <span style="color: var(--c-text-dim); font-weight: 400; font-size: 13px;">/ 1.8 TB</span></div>
+          </div>
+          <div>
+            <div class="mono" style="color: var(--c-text-dim); font-size: 11px;">剪贴板总数</div>
+            <div style="font-family: var(--f-head); font-weight: 600; font-size: 17px; margin-top: 4px;">44 <span style="color: var(--c-text-dim); font-weight: 400; font-size: 13px;">· 4 用户</span></div>
+          </div>
+          <div>
+            <div class="mono" style="color: var(--c-text-dim); font-size: 11px;">版本</div>
+            <div class="mono" style="font-size: 13px; margin-top: 4px;">v0.1.0 · 自建</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="interactions.js"></script>
+</body>
+</html>

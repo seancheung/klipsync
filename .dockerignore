@@ -1,0 +1,36 @@
+# 版本控制
+.git
+.gitignore
+
+# 构建产物 / 缓存
+node_modules
+.next
+dist
+out
+coverage
+
+# 运行时数据
+data
+*.db
+*.db-wal
+*.db-shm
+
+# 环境
+.env
+.env.*
+!.env.example
+
+# 工具 / IDE
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# 文档类产出（不进镜像，镜像体积无关）
+.faststack
+*.md
+
+# Docker 自身（避免递归）
+Dockerfile
+.dockerignore
+docker-compose*.yml

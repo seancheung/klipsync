@@ -1,0 +1,9 @@
+# FastStack 配置
+# 文档: https://github.com/seancheung/faststack
+version: 1
+
+# 模式：full（完整流程）或 lite（简化询问与产出，流程不变）
+mode: lite
+
+# FastStack 生成的所有文档会放在这个目录下
+docs_dir: .faststack

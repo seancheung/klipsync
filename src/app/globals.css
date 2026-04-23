@@ -1,0 +1,164 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Crisp Canvas 设计令牌
+   来源：.faststack/design.md §3–§8 / prototype/styles.css
+   ============================================================ */
+:root {
+  /* Neutrals */
+  --c-bg: #f5f5f7;
+  --c-bg-sunk: #ededf0;
+  --c-bg-raise: #ffffff;
+  --c-line: rgba(22, 22, 37, 0.07);
+  --c-line-strong: rgba(22, 22, 37, 0.12);
+
+  /* Foreground */
+  --c-text: #171629;
+  --c-text-mute: #5e5c73;
+  --c-text-dim: #8b8a9e;
+
+  /* Primary accent */
+  --c-accent: #7c5cfc;
+  --c-accent-soft: #efeafe;
+  --c-accent-strong: #6a45e8;
+
+  /* Pastel semantics */
+  --c-success: #15803d;
+  --c-success-soft: #dcfce7;
+  --c-warn: #b45309;
+  --c-warn-soft: #fef3c7;
+  --c-danger: #be123c;
+  --c-danger-soft: #ffe4e6;
+  --c-info: #0369a1;
+  --c-info-soft: #e0f2fe;
+  --c-peach: #c2410c;
+  --c-peach-soft: #ffedd5;
+
+  /* Typography：字体族由 next/font 注入到 <html> 的 --font-* 变量上，运行时自托管无外链 */
+  --f-head:
+    var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-body:
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono:
+    var(--font-geist-mono), ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+  /* Spacing (4 px 基准) */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-12: 48px;
+  --s-16: 64px;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+  --r-pill: 999px;
+
+  /* Motion */
+  --t-fast: 120ms cubic-bezier(0.22, 1, 0.36, 1);
+  --t-med: 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  --t-slow: 400ms cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Elevation */
+  --shadow-card: 0 1px 2px rgba(22, 22, 37, 0.04);
+  --shadow-pop:
+    0 4px 16px rgba(22, 22, 37, 0.08), 0 1px 2px rgba(22, 22, 37, 0.06);
+}
+
+[data-theme="dark"] {
+  --c-bg: #0f0f14;
+  --c-bg-sunk: #07070b;
+  --c-bg-raise: #18181f;
+  --c-line: rgba(245, 245, 248, 0.07);
+  --c-line-strong: rgba(245, 245, 248, 0.14);
+
+  --c-text: #f5f5f8;
+  --c-text-mute: #a4a3b5;
+  --c-text-dim: #6f6d82;
+
+  --c-accent: #9b82fd;
+  --c-accent-soft: rgba(155, 130, 253, 0.16);
+  --c-accent-strong: #b8a5fe;
+
+  --c-success: #6ee7a5;
+  --c-success-soft: rgba(110, 231, 165, 0.14);
+  --c-warn: #fbbf24;
+  --c-warn-soft: rgba(251, 191, 36, 0.14);
+  --c-danger: #fb7185;
+  --c-danger-soft: rgba(251, 113, 133, 0.14);
+  --c-info: #7dd3fc;
+  --c-info-soft: rgba(125, 211, 252, 0.14);
+  --c-peach: #fdba74;
+  --c-peach-soft: rgba(253, 186, 116, 0.14);
+
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-pop:
+    0 8px 32px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+@layer utilities {
+  /* Safe-area helpers —— 避开 iOS home indicator；需配合 viewport-fit=cover */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pb-safe-6 {
+    padding-bottom: calc(env(safe-area-inset-bottom) + var(--s-6));
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--c-line);
+  }
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: var(--f-body);
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+    transition:
+      background var(--t-med),
+      color var(--t-med);
+  }
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--f-head);
+    letter-spacing: -0.015em;
+    font-weight: 600;
+    margin: 0;
+  }
+  h1 {
+    font-size: 32px;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+  }
+  h2 {
+    font-size: 22px;
+    line-height: 1.2;
+  }
+  h3 {
+    font-size: 17px;
+    line-height: 1.3;
+  }
+  code,
+  .mono {
+    font-family: var(--f-mono);
+    font-feature-settings: "tnum";
+  }
+}

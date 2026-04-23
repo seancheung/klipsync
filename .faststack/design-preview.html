@@ -1,0 +1,1014 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KlipSync · 设计预览</title>
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link href="https://fonts.bunny.net/css?family=geist:300,400,500,600,700|geist-mono:400,500|inter:400,500,600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --c-bg:        #F5F5F7;
+    --c-bg-sunk:   #EDEDF0;
+    --c-bg-raise:  #FFFFFF;
+    --c-line:      rgba(22, 22, 37, 0.07);
+    --c-line-strong: rgba(22, 22, 37, 0.12);
+    --c-text:      #171629;
+    --c-text-mute: #5E5C73;
+    --c-text-dim:  #8B8A9E;
+    --c-accent:    #7C5CFC;
+    --c-accent-soft: #EFEAFE;
+    --c-accent-strong: #6A45E8;
+    --c-success:   #15803D;
+    --c-success-soft: #DCFCE7;
+    --c-danger:    #BE123C;
+    --c-danger-soft: #FFE4E6;
+    --c-info:      #0369A1;
+    --c-info-soft: #E0F2FE;
+    --c-warn:      #B45309;
+    --c-warn-soft: #FEF3C7;
+    --c-peach:     #C2410C;
+    --c-peach-soft: #FFEDD5;
+
+    --f-head: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --f-body: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --f-mono: "Geist Mono", ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+
+    --s-1: 4px;
+    --s-2: 8px;
+    --s-3: 12px;
+    --s-4: 16px;
+    --s-6: 24px;
+    --s-8: 32px;
+    --s-12: 48px;
+    --s-16: 64px;
+
+    --r-sm: 6px;
+    --r-md: 8px;
+    --r-lg: 14px;
+    --r-xl: 18px;
+    --r-pill: 999px;
+
+    --t-fast:   120ms cubic-bezier(0.22, 1, 0.36, 1);
+    --t-med:    200ms cubic-bezier(0.22, 1, 0.36, 1);
+    --t-slow:   400ms cubic-bezier(0.22, 1, 0.36, 1);
+
+    --shadow-raise: 0 1px 2px rgba(10,10,11,0.04), 0 4px 12px rgba(10,10,11,0.04);
+    --shadow-pop:   0 2px 6px rgba(10,10,11,0.06), 0 12px 32px rgba(10,10,11,0.08);
+  }
+  [data-theme="dark"] {
+    --c-bg:        #0F0F14;
+    --c-bg-sunk:   #07070B;
+    --c-bg-raise:  #18181F;
+    --c-line:      rgba(245, 245, 248, 0.07);
+    --c-line-strong: rgba(245, 245, 248, 0.14);
+    --c-text:      #F5F5F8;
+    --c-text-mute: #A4A3B5;
+    --c-text-dim:  #6F6D82;
+    --c-accent:    #9B82FD;
+    --c-accent-soft: rgba(155, 130, 253, 0.16);
+    --c-accent-strong: #B8A5FE;
+    --c-success:   #6EE7A5;
+    --c-success-soft: rgba(110, 231, 165, 0.14);
+    --c-danger:    #FB7185;
+    --c-danger-soft: rgba(251, 113, 133, 0.14);
+    --c-info:      #7DD3FC;
+    --c-info-soft: rgba(125, 211, 252, 0.14);
+    --c-warn:      #FBBF24;
+    --c-warn-soft: rgba(251, 191, 36, 0.14);
+    --c-peach:     #FDBA74;
+    --c-peach-soft: rgba(253, 186, 116, 0.14);
+
+    --shadow-raise: 0 1px 2px rgba(0,0,0,0.4), 0 4px 12px rgba(0,0,0,0.3);
+    --shadow-pop:   0 2px 6px rgba(0,0,0,0.5), 0 12px 32px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--c-bg);
+    color: var(--c-text);
+    font-family: var(--f-body);
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    transition: background var(--t-med), color var(--t-med);
+  }
+  h1, h2, h3, h4 { font-family: var(--f-head); margin: 0; letter-spacing: -0.015em; }
+  code, .mono { font-family: var(--f-mono); font-feature-settings: "tnum", "ss01"; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--s-4) var(--s-8);
+    background: color-mix(in srgb, var(--c-bg) 85%, transparent);
+    backdrop-filter: saturate(1.2) blur(8px);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .brand { display: flex; align-items: center; gap: var(--s-3); }
+  .brand .mark {
+    width: 28px; height: 28px; border-radius: 9px;
+    background: var(--c-accent); color: #FFFFFF;
+    display: grid; place-items: center;
+    font-family: var(--f-head); font-weight: 700; font-size: 15px;
+    letter-spacing: -0.04em;
+  }
+  [data-theme="dark"] .brand .mark { color: #0F0F14; }
+  .brand .name { font-family: var(--f-head); font-weight: 600; letter-spacing: -0.02em; }
+  .brand .tag {
+    font-family: var(--f-mono); font-size: 11px;
+    color: var(--c-text-dim);
+    padding: 2px 6px; border: 1px solid var(--c-line);
+    border-radius: var(--r-sm);
+  }
+
+  .theme-toggle {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: 6px 10px;
+    font-family: var(--f-mono); font-size: 12px;
+    color: var(--c-text-mute);
+    background: var(--c-bg-raise);
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-md);
+    cursor: pointer;
+    transition: all var(--t-fast);
+  }
+  .theme-toggle:hover { color: var(--c-text); border-color: var(--c-line-strong); }
+  .theme-toggle .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--c-accent); }
+
+  main { max-width: 1160px; margin: 0 auto; padding: var(--s-12) var(--s-8) var(--s-16); }
+
+  .lede {
+    max-width: 680px;
+    margin-bottom: var(--s-12);
+  }
+  .lede h1 {
+    font-size: 56px; font-weight: 600; line-height: 1.02;
+    letter-spacing: -0.04em;
+  }
+  .lede h1 .accent { color: var(--c-accent); font-weight: 500; }
+  .lede p {
+    margin-top: var(--s-4);
+    color: var(--c-text-mute);
+    font-size: 17px; line-height: 1.55;
+  }
+  .lede .meta {
+    margin-top: var(--s-6);
+    display: flex; gap: var(--s-4); flex-wrap: wrap;
+    font-family: var(--f-mono); font-size: 12px;
+    color: var(--c-text-dim);
+  }
+  .lede .meta span::before { content: "· "; color: var(--c-line-strong); margin-right: 4px; }
+  .lede .meta span:first-child::before { content: ""; margin-right: 0; }
+
+  section { margin-top: var(--s-16); }
+  section > header { margin-bottom: var(--s-6); display: flex; align-items: baseline; gap: var(--s-4); }
+  section > header h2 {
+    font-size: 22px; font-weight: 600;
+  }
+  section > header .idx {
+    font-family: var(--f-mono); color: var(--c-text-dim); font-size: 12px;
+  }
+  section > header .desc {
+    color: var(--c-text-mute); font-size: 13px; margin-left: auto; max-width: 520px; text-align: right;
+  }
+
+  .grid { display: grid; gap: var(--s-4); }
+
+  /* ========== 字体展示 ========== */
+  .type-stack {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-lg);
+    background: var(--c-bg-raise);
+    overflow: hidden;
+  }
+  .type-row {
+    display: grid; grid-template-columns: 140px 1fr; gap: var(--s-6);
+    padding: var(--s-6) var(--s-8);
+    border-bottom: 1px solid var(--c-line);
+    align-items: baseline;
+  }
+  .type-row:last-child { border-bottom: 0; }
+  .type-label {
+    font-family: var(--f-mono); font-size: 11px;
+    color: var(--c-text-dim);
+    text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .type-label .name { color: var(--c-text-mute); display: block; margin-top: 4px; text-transform: none; letter-spacing: 0; font-size: 12px; }
+  .type-sample { min-width: 0; }
+  .t-display { font-family: var(--f-head); font-size: 44px; font-weight: 500; line-height: 1.05; letter-spacing: -0.035em; }
+  .t-h1 { font-family: var(--f-head); font-size: 32px; font-weight: 600; line-height: 1.1; letter-spacing: -0.025em; }
+  .t-h2 { font-family: var(--f-head); font-size: 22px; font-weight: 600; line-height: 1.2; letter-spacing: -0.015em; }
+  .t-h3 { font-family: var(--f-head); font-size: 17px; font-weight: 600; line-height: 1.3; }
+  .t-body { font-family: var(--f-body); font-size: 15px; font-weight: 400; line-height: 1.55; color: var(--c-text); max-width: 62ch; }
+  .t-body-sm { font-family: var(--f-body); font-size: 13px; font-weight: 400; line-height: 1.5; color: var(--c-text-mute); max-width: 62ch; }
+  .t-mono-meta { font-family: var(--f-mono); font-size: 12px; color: var(--c-text-mute); font-feature-settings: "tnum"; }
+  .t-caption { font-family: var(--f-body); font-size: 12px; color: var(--c-text-dim); letter-spacing: 0.01em; }
+
+  /* ========== 色板 ========== */
+  .palette { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-3); }
+  .swatch {
+    border-radius: var(--r-md);
+    overflow: hidden;
+    border: 1px solid var(--c-line);
+    background: var(--c-bg-raise);
+  }
+  .swatch .chip { height: 96px; display: flex; align-items: flex-end; padding: var(--s-3); }
+  .swatch .chip .on { font-family: var(--f-mono); font-size: 11px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.85); color: #0A0A0B; }
+  .swatch .chip .on.dark { background: rgba(10,10,11,0.75); color: #F5F5F2; }
+  .swatch .meta { padding: var(--s-3); display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-2); }
+  .swatch .meta .n { font-family: var(--f-head); font-weight: 500; font-size: 13px; }
+  .swatch .meta .v { font-family: var(--f-mono); font-size: 11px; color: var(--c-text-dim); }
+  .swatch .meta .u { grid-column: 1 / -1; font-size: 11px; color: var(--c-text-mute); margin-top: 2px; }
+
+  .palette-row-title {
+    font-family: var(--f-mono); font-size: 11px; text-transform: uppercase;
+    color: var(--c-text-dim); letter-spacing: 0.06em;
+    margin: var(--s-6) 0 var(--s-3);
+  }
+  .palette-row-title:first-child { margin-top: 0; }
+
+  /* contrast panel */
+  .contrast {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-3);
+    margin-top: var(--s-4);
+  }
+  .contrast .demo {
+    padding: var(--s-4) var(--s-4);
+    border-radius: var(--r-md);
+    border: 1px solid var(--c-line);
+    font-size: 13px; line-height: 1.5;
+  }
+  .contrast .demo.bg { background: var(--c-bg); color: var(--c-text); }
+  .contrast .demo.bg-sunk { background: var(--c-bg-sunk); color: var(--c-text); }
+  .contrast .demo.bg-accent { background: var(--c-accent-soft); color: var(--c-accent-strong); }
+  .contrast .demo small { display: block; margin-top: 4px; font-family: var(--f-mono); font-size: 11px; color: var(--c-text-dim); }
+
+  /* ========== 组件 ========== */
+  .comp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-6); }
+  .comp {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-lg);
+    padding: var(--s-6);
+    background: var(--c-bg-raise);
+    box-shadow: 0 1px 2px rgba(22,22,37,0.04);
+  }
+  [data-theme="dark"] .comp { box-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+  .comp h3 {
+    font-size: 13px; font-weight: 500;
+    color: var(--c-text-mute);
+    font-family: var(--f-mono); text-transform: uppercase; letter-spacing: 0.06em;
+    margin-bottom: var(--s-4);
+  }
+  .row { display: flex; flex-wrap: wrap; gap: var(--s-2); align-items: center; margin-bottom: var(--s-3); }
+  .row:last-child { margin-bottom: 0; }
+  .row .lbl { font-family: var(--f-mono); font-size: 11px; color: var(--c-text-dim); width: 72px; flex-shrink: 0; }
+
+  /* buttons */
+  .btn {
+    font-family: var(--f-head); font-size: 13px; font-weight: 500;
+    padding: 6px 12px;
+    border-radius: var(--r-md);
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--c-text);
+    cursor: pointer;
+    transition: background var(--t-fast), border-color var(--t-fast), color var(--t-fast), transform var(--t-fast);
+    display: inline-flex; align-items: center; gap: 6px;
+    line-height: 1.2;
+  }
+  .btn:active { transform: translateY(0.5px); }
+  .btn-primary {
+    background: var(--c-accent); color: #FFFFFF;
+    border-color: var(--c-accent);
+  }
+  .btn-primary:hover { background: var(--c-accent-strong); border-color: var(--c-accent-strong); }
+  .btn-primary .kbd {
+    background: #FFFFFF;
+    color: var(--c-accent-strong);
+    border-color: transparent;
+    font-weight: 600;
+  }
+  [data-theme="dark"] .btn-primary { color: #0F0F14; }
+  [data-theme="dark"] .btn-primary:hover { color: #0F0F14; }
+  [data-theme="dark"] .btn-primary .kbd {
+    background: #0F0F14;
+    color: var(--c-accent);
+    border-color: transparent;
+  }
+  .btn-secondary {
+    background: var(--c-bg-raise); color: var(--c-text);
+    border-color: var(--c-line-strong);
+  }
+  .btn-secondary:hover { background: var(--c-bg-sunk); border-color: var(--c-text-dim); }
+  .btn-ghost { color: var(--c-text-mute); }
+  .btn-ghost:hover { background: var(--c-bg-sunk); color: var(--c-text); }
+  .btn-danger { color: var(--c-danger); }
+  .btn-danger:hover { background: var(--c-danger-soft); }
+  .btn-accent {
+    background: var(--c-accent-soft); color: var(--c-accent-strong);
+    border-color: color-mix(in srgb, var(--c-accent) 35%, transparent);
+  }
+  .btn-accent:hover { background: color-mix(in srgb, var(--c-accent) 20%, var(--c-bg-raise)); border-color: var(--c-accent); }
+  [data-theme="dark"] .btn-accent { color: var(--c-accent-strong); }
+  .btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+  .btn .kbd {
+    font-family: var(--f-mono); font-size: 10px;
+    padding: 1px 5px; margin-left: 4px;
+    border: 1px solid var(--c-line-strong);
+    border-radius: 3px;
+    color: var(--c-text-dim);
+  }
+  .btn-sm { padding: 4px 8px; font-size: 12px; }
+  .btn-lg { padding: 8px 14px; font-size: 14px; }
+
+  /* form */
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: var(--s-3); }
+  .field label { font-size: 12px; color: var(--c-text-mute); font-weight: 500; }
+  .input {
+    font-family: var(--f-body); font-size: 14px;
+    padding: 9px 12px;
+    background: var(--c-bg-raise);
+    border: 1px solid var(--c-line-strong);
+    border-radius: var(--r-md);
+    color: var(--c-text);
+    transition: border-color var(--t-fast), box-shadow var(--t-fast);
+    outline: none;
+  }
+  .input::placeholder { color: var(--c-text-dim); }
+  .input:hover { border-color: var(--c-text-mute); }
+  .input:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-accent-soft); }
+  .input.error { border-color: var(--c-danger); }
+  .input.error:focus { box-shadow: 0 0 0 3px var(--c-danger-soft); }
+  .help { font-size: 11px; color: var(--c-text-dim); font-family: var(--f-mono); }
+  .help.error { color: var(--c-danger); }
+
+  .checkbox { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: var(--c-text-mute); }
+  .checkbox input { width: 15px; height: 15px; accent-color: var(--c-text); }
+
+  /* card / alerts · pastel */
+  .alert {
+    display: flex; gap: var(--s-3); padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-lg);
+    border: 1px solid transparent;
+    margin-bottom: var(--s-2);
+    font-size: 13px;
+  }
+  .alert .dot { width: 7px; height: 7px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .alert strong { font-weight: 600; }
+  .alert .txt { color: var(--c-text); }
+  .alert .txt small { display: block; color: var(--c-text-mute); margin-top: 2px; }
+  .alert.success { background: var(--c-success-soft); }
+  .alert.success .dot { background: var(--c-success); }
+  .alert.success strong { color: var(--c-success); }
+  .alert.warn    { background: var(--c-warn-soft); }
+  .alert.warn .dot { background: var(--c-warn); }
+  .alert.warn strong { color: var(--c-warn); }
+  .alert.danger  { background: var(--c-danger-soft); }
+  .alert.danger .dot { background: var(--c-danger); }
+  .alert.danger strong { color: var(--c-danger); }
+  .alert.info    { background: var(--c-info-soft); }
+  .alert.info .dot { background: var(--c-info); }
+  .alert.info strong { color: var(--c-info); }
+  .alert.accent  { background: var(--c-accent-soft); }
+  .alert.accent .dot { background: var(--c-accent); }
+  .alert.accent strong { color: var(--c-accent-strong); }
+
+  /* pastel 胶囊状态徽章 */
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 10px;
+    border-radius: var(--r-pill);
+    font-family: var(--f-head); font-size: 12px; font-weight: 500;
+    line-height: 1.5;
+  }
+  .badge .b-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .badge.pending  { background: var(--c-peach-soft);   color: var(--c-peach); }
+  .badge.pending .b-dot  { background: var(--c-peach); }
+  .badge.confirmed{ background: var(--c-success-soft); color: var(--c-success); }
+  .badge.confirmed .b-dot{ background: var(--c-success); }
+  .badge.rejected { background: var(--c-danger-soft);  color: var(--c-danger); }
+  .badge.rejected .b-dot { background: var(--c-danger); }
+  .badge.progress { background: var(--c-warn-soft);    color: var(--c-warn); }
+  .badge.progress .b-dot { background: var(--c-warn); }
+  .badge.pinned   { background: var(--c-accent-soft);  color: var(--c-accent-strong); }
+  .badge.pinned .b-dot   { background: var(--c-accent); }
+  .badge.info     { background: var(--c-info-soft);    color: var(--c-info); }
+  .badge.info .b-dot     { background: var(--c-info); }
+
+  /* ========== 剪贴板列表项演示 ========== */
+  .clip-list { border: 1px solid var(--c-line); border-radius: var(--r-lg); background: var(--c-bg-raise); overflow: hidden; }
+  .clip-item {
+    display: grid;
+    grid-template-columns: 16px 1fr auto;
+    gap: var(--s-3);
+    padding: var(--s-3) var(--s-4);
+    border-bottom: 1px solid var(--c-line);
+    align-items: start;
+    cursor: pointer;
+    transition: background var(--t-fast);
+  }
+  .clip-item:last-child { border-bottom: 0; }
+  .clip-item:hover { background: var(--c-bg-sunk); }
+  .clip-item.active { background: var(--c-accent-soft); }
+  .clip-item.active::before {
+    content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 3px;
+    background: var(--c-accent); border-radius: 0 3px 3px 0;
+  }
+  .clip-item { position: relative; }
+  .clip-item .pin {
+    color: var(--c-accent); font-size: 12px; line-height: 1.5;
+    opacity: 0;
+  }
+  .clip-item.pinned .pin { opacity: 1; }
+  .clip-item .body { min-width: 0; }
+  .clip-item .body .text {
+    font-size: 13px; line-height: 1.45;
+    color: var(--c-text);
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .clip-item .body .text.empty { color: var(--c-text-dim); font-style: italic; }
+  .clip-item .body .meta {
+    margin-top: 4px;
+    display: flex; gap: var(--s-3); align-items: center;
+    font-family: var(--f-mono); font-size: 11px; color: var(--c-text-dim);
+  }
+  .clip-item .body .meta .att { display: inline-flex; align-items: center; gap: 3px; }
+  .clip-item .right {
+    font-family: var(--f-mono); font-size: 11px; color: var(--c-text-dim);
+    white-space: nowrap;
+  }
+
+  /* ========== 间距梯度 ========== */
+  .spacing { display: flex; flex-direction: column; gap: var(--s-2); }
+  .sp-row { display: grid; grid-template-columns: 80px 1fr 60px; gap: var(--s-3); align-items: center; }
+  .sp-row .k { font-family: var(--f-mono); font-size: 11px; color: var(--c-text-dim); }
+  .sp-row .bar {
+    height: 16px; background: var(--c-text);
+    border-radius: 2px;
+  }
+  .sp-row .bar.accent { background: var(--c-accent); }
+  .sp-row .v { font-family: var(--f-mono); font-size: 11px; color: var(--c-text-mute); text-align: right; }
+
+  /* ========== 迷你演示块：编辑区 ========== */
+  .editor-demo {
+    border: 1px solid var(--c-line);
+    border-radius: var(--r-lg);
+    background: var(--c-bg-raise);
+    padding: var(--s-6);
+    display: grid; gap: var(--s-4);
+  }
+  .editor-demo .tbar { display: flex; justify-content: space-between; align-items: center; }
+  .editor-demo .tbar .left { display: flex; gap: var(--s-2); align-items: center; }
+  .editor-demo .tbar .meta {
+    font-family: var(--f-mono); font-size: 11px; color: var(--c-text-dim);
+  }
+  .editor-demo .tbar .meta .url { color: var(--c-text-mute); }
+  .editor-demo textarea {
+    width: 100%;
+    min-height: 160px;
+    padding: var(--s-4);
+    font-family: var(--f-body); font-size: 14px; line-height: 1.6;
+    color: var(--c-text);
+    background: var(--c-bg-raise);
+    border: 1px solid var(--c-line-strong);
+    border-radius: var(--r-md);
+    resize: vertical;
+    outline: none;
+    transition: border-color var(--t-fast), box-shadow var(--t-fast);
+  }
+  .editor-demo textarea:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px var(--c-accent-soft); }
+  .editor-demo .att-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--s-2);
+  }
+  .att-card {
+    border: 1px solid var(--c-line-strong);
+    border-radius: var(--r-md);
+    padding: var(--s-2);
+    background: var(--c-bg-raise);
+    display: flex; flex-direction: column; gap: 6px;
+    transition: border-color var(--t-fast);
+  }
+  .att-card:hover { border-color: var(--c-accent); }
+  .att-card .thumb {
+    height: 64px; border-radius: var(--r-sm);
+    background: var(--c-bg);
+    display: grid; place-items: center;
+    color: var(--c-text-dim); font-family: var(--f-mono); font-size: 10px; font-weight: 500;
+  }
+  .att-card .fn { font-size: 12px; color: var(--c-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .att-card .fs { font-family: var(--f-mono); font-size: 10px; color: var(--c-text-dim); }
+
+  .qr {
+    width: 104px; height: 104px; border-radius: var(--r-md);
+    background: var(--c-bg-raise); border: 1px solid var(--c-line-strong);
+    padding: 8px;
+    display: grid; place-items: center;
+  }
+  .qr svg { width: 100%; height: 100%; }
+
+  /* responsive */
+  @media (max-width: 780px) {
+    main { padding: var(--s-8) var(--s-4) var(--s-12); }
+    .lede h1 { font-size: 40px; }
+    .palette { grid-template-columns: repeat(2, 1fr); }
+    .comp-grid { grid-template-columns: 1fr; }
+    .contrast { grid-template-columns: 1fr; }
+    .type-row { grid-template-columns: 1fr; gap: var(--s-2); padding: var(--s-4); }
+    section > header { flex-direction: column; align-items: flex-start; gap: 4px; }
+    section > header .desc { margin-left: 0; text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="mark">K</div>
+    <div class="name">KlipSync</div>
+    <div class="tag">design preview v0.1</div>
+  </div>
+  <button class="theme-toggle" id="themeBtn" title="切换主题">
+    <span class="dot"></span>
+    <span id="themeLabel">浅色</span>
+  </button>
+</header>
+
+<main>
+  <section class="lede">
+    <h1>跨设备<span class="accent">秒级同步</span>的<br/>剪贴板，在你的 NAS 上。</h1>
+    <p>KlipSync 不是 dashboard，也不是 PKM。它只做一件事：让文本和附件在你的 Windows、mac、iPhone 之间秒级流动，无需装任何客户端。这份预览用真实的色彩、字体和组件呈现最终 UI 的气质。</p>
+    <div class="meta">
+      <span class="mono">Crisp Canvas</span>
+      <span class="mono">纯白画布 + Soft Violet CTA + Pastel 徽章</span>
+      <span class="mono">Geist / Inter / Geist Mono</span>
+      <span class="mono">4px 基准 · 紧凑密度</span>
+    </div>
+  </section>
+
+  <!-- ================= 字体 ================= -->
+  <section>
+    <header>
+      <h2>字体与排版</h2>
+      <span class="idx mono">01 / Typography</span>
+      <span class="desc">Geist 做结构与 UI、Inter 承载正文编辑、Geist Mono 仅出现在时间戳 / ID / URL 等技术元信息。语料来自真实产品场景。</span>
+    </header>
+
+    <div class="type-stack">
+      <div class="type-row">
+        <div class="type-label">Display<span class="name">Geist 500 · 44/1.05</span></div>
+        <div class="type-sample"><div class="t-display">打开浏览器就能用的共享剪贴板</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">H1<span class="name">Geist 600 · 32/1.1</span></div>
+        <div class="type-sample"><div class="t-h1">我的空间</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">H2<span class="name">Geist 600 · 22/1.2</span></div>
+        <div class="type-sample"><div class="t-h2">3 个剪贴板 · 2 条置顶</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">H3<span class="name">Geist 600 · 17/1.3</span></div>
+        <div class="type-sample"><div class="t-h3">此剪贴板已被删除（由其他设备）</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">Body<span class="name">Inter 400 · 15/1.55</span></div>
+        <div class="type-sample"><div class="t-body">周五下午开会要带的那份报价表链接在这里。另外别忘了顺路取一下书店的预订书——密码本上写着"青鸟 1997"。所有内容自动落盘，你随便关窗口都不会丢。</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">Body Small<span class="name">Inter 400 · 13/1.5</span></div>
+        <div class="type-sample"><div class="t-body-sm">密码为初始密码或已被管理员重置，请立即修改后继续使用。离开前未输入任何文本或上传任何附件时，不会创建新剪贴板。</div></div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">Mono Meta<span class="name">Geist Mono 400 · 12</span></div>
+        <div class="type-sample">
+          <div class="t-mono-meta">
+            /c/9f2a1b-payment-report &nbsp;·&nbsp; 2026-04-22 14:22 &nbsp;·&nbsp; 3 min ago &nbsp;·&nbsp; 📎 2 · 1.4 MB
+          </div>
+        </div>
+      </div>
+      <div class="type-row">
+        <div class="type-label">Caption<span class="name">Inter 400 · 12</span></div>
+        <div class="type-sample"><div class="t-caption">粘贴、拖放或点击选择附件（单文件 ≤ 10 MB）</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 色彩 ================= -->
+  <section>
+    <header>
+      <h2>色彩体系</h2>
+      <span class="idx mono">02 / Color</span>
+      <span class="desc">主色即中性色，强调色 Sync Amber 仅在"置顶 / 复制成功 / 新剪贴板落盘"三个时刻出现。</span>
+    </header>
+
+    <div class="palette-row-title">中性底色 · Neutrals</div>
+    <div class="palette">
+      <div class="swatch">
+        <div class="chip" style="background:#F5F5F7"><span class="on">Window frame</span></div>
+        <div class="meta"><span class="n">Bg</span><span class="v mono">#F5F5F7</span><span class="u">窗口外层底色</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#FFFFFF;border-bottom:1px solid var(--c-line);"><span class="on">Card / canvas</span></div>
+        <div class="meta"><span class="n">Bg Raise</span><span class="v mono">#FFFFFF</span><span class="u">卡片 / 编辑区纯白画布</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#EDEDF0"><span class="on">Text on sunk</span></div>
+        <div class="meta"><span class="n">Bg Sunk</span><span class="v mono">#EDEDF0</span><span class="u">hover · 下沉态</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#0F0F14"><span class="on dark">Text on bg</span></div>
+        <div class="meta"><span class="n">Bg (dark)</span><span class="v mono">#0F0F14</span><span class="u">深色底 · 近黑带微紫</span></div>
+      </div>
+    </div>
+
+    <div class="palette-row-title">文本 · Foreground</div>
+    <div class="palette">
+      <div class="swatch">
+        <div class="chip" style="background:#FFFFFF"><span style="color:#171629;font-family:var(--f-head);font-weight:600;">主要文本</span></div>
+        <div class="meta"><span class="n">Text</span><span class="v mono">#171629</span><span class="u">深紫黑 · 非纯黑</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#FFFFFF"><span style="color:#5E5C73;font-family:var(--f-body);">次要说明</span></div>
+        <div class="meta"><span class="n">Text Mute</span><span class="v mono">#5E5C73</span><span class="u">紫灰 · 辅助文案</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#0F0F14"><span style="color:#F5F5F8;font-family:var(--f-head);font-weight:600;">主要文本</span></div>
+        <div class="meta"><span class="n">Text (dark)</span><span class="v mono">#F5F5F8</span><span class="u">微紫白 · 非纯白</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#0F0F14"><span style="color:#A4A3B5;font-family:var(--f-body);">次要说明</span></div>
+        <div class="meta"><span class="n">Text Mute (dark)</span><span class="v mono">#A4A3B5</span><span class="u">紫灰 · 深色辅助</span></div>
+      </div>
+    </div>
+
+    <div class="palette-row-title">强调色 · Primary Accent</div>
+    <div class="palette">
+      <div class="swatch">
+        <div class="chip" style="background:#7C5CFC"><span class="on dark">Primary CTA</span></div>
+        <div class="meta"><span class="n">Soft Violet</span><span class="v mono">#7C5CFC</span><span class="u">所有主按钮 / Logo / active 条</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#EFEAFE"><span style="color:#6A45E8;font-family:var(--f-mono);font-size:11px;font-weight:500;">· 新剪贴板已同步</span></div>
+        <div class="meta"><span class="n">Violet Soft</span><span class="v mono">#EFEAFE</span><span class="u">pastel 底 · 置顶徽章 · 反馈态</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#6A45E8"><span class="on dark">Pressed</span></div>
+        <div class="meta"><span class="n">Violet Deep</span><span class="v mono">#6A45E8</span><span class="u">按压态</span></div>
+      </div>
+      <div class="swatch" style="opacity:0.55;">
+        <div class="chip" style="background: repeating-linear-gradient(45deg, #FFFFFF, #FFFFFF 6px, #F5F5F7 6px, #F5F5F7 12px);"></div>
+        <div class="meta"><span class="n">不用渐变</span><span class="v mono">—</span><span class="u">按钮不做 gradient</span></div>
+      </div>
+    </div>
+
+    <div class="palette-row-title">Pastel 语义色 · Semantic</div>
+    <div class="palette">
+      <div class="swatch">
+        <div class="chip" style="background:#DCFCE7"><span style="color:#15803D;font-family:var(--f-head);font-weight:600;font-size:12px;">已保存</span></div>
+        <div class="meta"><span class="n">Success</span><span class="v mono">#15803D / DCFCE7</span><span class="u">已保存 / 落盘成功</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#FEF3C7"><span style="color:#B45309;font-family:var(--f-head);font-weight:600;font-size:12px;">未保存 重试中</span></div>
+        <div class="meta"><span class="n">Warn</span><span class="v mono">#B45309 / FEF3C7</span><span class="u">网络抖动 / 只读</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#FFE4E6"><span style="color:#BE123C;font-family:var(--f-head);font-weight:600;font-size:12px;">已删除</span></div>
+        <div class="meta"><span class="n">Danger</span><span class="v mono">#BE123C / FFE4E6</span><span class="u">删除 / 错误</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#FFEDD5"><span style="color:#C2410C;font-family:var(--f-head);font-weight:600;font-size:12px;">上传中</span></div>
+        <div class="meta"><span class="n">Peach</span><span class="v mono">#C2410C / FFEDD5</span><span class="u">进行中 / 等待</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#E0F2FE"><span style="color:#0369A1;font-family:var(--f-head);font-weight:600;font-size:12px;">扫码登录</span></div>
+        <div class="meta"><span class="n">Info</span><span class="v mono">#0369A1 / E0F2FE</span><span class="u">中性提示</span></div>
+      </div>
+      <div class="swatch">
+        <div class="chip" style="background:#EFEAFE"><span style="color:#6A45E8;font-family:var(--f-head);font-weight:600;font-size:12px;">已置顶</span></div>
+        <div class="meta"><span class="n">Pinned</span><span class="v mono">#6A45E8 / EFEAFE</span><span class="u">置顶（同主色系）</span></div>
+      </div>
+    </div>
+
+    <div class="contrast">
+      <div class="demo bg">
+        <strong>于 bg 上的主要文本</strong><br/>
+        周五开会的报价表链接。<small>Text on Bg · WCAG AAA</small>
+      </div>
+      <div class="demo bg-sunk">
+        <strong>于 hover/sunk 上</strong><br/>
+        列表项悬浮态仍保持易读。<small>Text on Bg-Sunk · AAA</small>
+      </div>
+      <div class="demo bg-accent">
+        <strong>Violet Soft · 短暂高亮</strong><br/>
+        新条目刚落盘闪烁 400ms。<small>Violet-Deep on Violet-Soft</small>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 间距 ================= -->
+  <section>
+    <header>
+      <h2>间距与节奏</h2>
+      <span class="idx mono">03 / Spacing</span>
+      <span class="desc">4px 基准 · 偏紧凑 · 列表项 56px · 编辑区 padding 24px</span>
+    </header>
+
+    <div class="spacing">
+      <div class="sp-row"><span class="k">--s-1</span><span><div class="bar" style="width:4px"></div></span><span class="v">4 px</span></div>
+      <div class="sp-row"><span class="k">--s-2</span><span><div class="bar" style="width:8px"></div></span><span class="v">8 px</span></div>
+      <div class="sp-row"><span class="k">--s-3</span><span><div class="bar" style="width:12px"></div></span><span class="v">12 px</span></div>
+      <div class="sp-row"><span class="k">--s-4</span><span><div class="bar" style="width:16px"></div></span><span class="v">16 px</span></div>
+      <div class="sp-row"><span class="k">--s-6</span><span><div class="bar accent" style="width:24px"></div></span><span class="v">24 px · 编辑区 pad</span></div>
+      <div class="sp-row"><span class="k">--s-8</span><span><div class="bar" style="width:32px"></div></span><span class="v">32 px</span></div>
+      <div class="sp-row"><span class="k">--s-12</span><span><div class="bar" style="width:48px"></div></span><span class="v">48 px</span></div>
+      <div class="sp-row"><span class="k">--s-16</span><span><div class="bar" style="width:64px"></div></span><span class="v">64 px</span></div>
+    </div>
+  </section>
+
+  <!-- ================= 组件 ================= -->
+  <section>
+    <header>
+      <h2>组件预览</h2>
+      <span class="idx mono">04 / Components</span>
+      <span class="desc">按钮 / 表单 / 消息 / 剪贴板列表项 / 附件卡 —— 所有组件在当前主题下直接可见。</span>
+    </header>
+
+    <div class="comp-grid">
+      <!-- 按钮 -->
+      <div class="comp">
+        <h3>按钮 · Buttons</h3>
+        <div class="row"><span class="lbl">Primary</span>
+          <button class="btn btn-primary">登录 <span class="kbd">↵</span></button>
+          <button class="btn btn-primary btn-sm">确认</button>
+          <button class="btn btn-primary" disabled>禁用</button>
+        </div>
+        <div class="row"><span class="lbl">Secondary</span>
+          <button class="btn btn-secondary">取消</button>
+          <button class="btn btn-secondary btn-sm">重试</button>
+          <button class="btn btn-secondary">下载附件</button>
+        </div>
+        <div class="row"><span class="lbl">Ghost</span>
+          <button class="btn btn-ghost">设置</button>
+          <button class="btn btn-ghost">＋ 新建</button>
+        </div>
+        <div class="row"><span class="lbl">Accent</span>
+          <button class="btn btn-accent">✓ 已复制</button>
+        </div>
+        <div class="row"><span class="lbl">Danger</span>
+          <button class="btn btn-danger">删除此剪贴板</button>
+          <button class="btn btn-danger btn-sm">清空</button>
+        </div>
+      </div>
+
+      <!-- 表单 -->
+      <div class="comp">
+        <h3>表单 · Form</h3>
+        <div class="field">
+          <label>用户名</label>
+          <input class="input" value="sean" />
+        </div>
+        <div class="field">
+          <label>密码</label>
+          <input class="input" type="password" value="password" />
+        </div>
+        <div class="field">
+          <label>新密码</label>
+          <input class="input error" type="password" value="12345" />
+          <div class="help error">密码需至少 8 位，且不能与旧密码相同</div>
+        </div>
+        <label class="checkbox"><input type="checkbox" checked /> 记住我（长期 Cookie）</label>
+      </div>
+
+      <!-- 消息 -->
+      <div class="comp">
+        <h3>消息反馈 · Alerts</h3>
+        <div class="alert accent">
+          <span class="dot"></span>
+          <div class="txt"><strong>剪贴板已创建</strong><small>已同步到其他设备 · 用时 380 ms</small></div>
+        </div>
+        <div class="alert success">
+          <span class="dot"></span>
+          <div class="txt"><strong>密码已更新</strong><small>下次登录请使用新密码</small></div>
+        </div>
+        <div class="alert warn">
+          <span class="dot"></span>
+          <div class="txt"><strong>未保存 · 重试中…</strong><small>网络抖动，本地已缓存你的修改</small></div>
+        </div>
+        <div class="alert danger">
+          <span class="dot"></span>
+          <div class="txt"><strong>此剪贴板已被删除（由其他设备）</strong><small>可返回列表或保存当前草稿为新剪贴板</small></div>
+        </div>
+        <div class="alert info">
+          <span class="dot"></span>
+          <div class="txt"><strong>扫码登录</strong><small>在手机系统相机打开此二维码即可访问</small></div>
+        </div>
+      </div>
+
+      <!-- Pastel 徽章 -->
+      <div class="comp">
+        <h3>状态徽章 · Pastel Badges</h3>
+        <div class="row"><span class="lbl">剪贴板</span>
+          <span class="badge pinned"><span class="b-dot"></span>已置顶</span>
+          <span class="badge confirmed"><span class="b-dot"></span>已保存</span>
+          <span class="badge progress"><span class="b-dot"></span>保存中</span>
+          <span class="badge rejected"><span class="b-dot"></span>已删除</span>
+        </div>
+        <div class="row"><span class="lbl">附件</span>
+          <span class="badge pending"><span class="b-dot"></span>上传中 · 42%</span>
+          <span class="badge confirmed"><span class="b-dot"></span>已完成</span>
+          <span class="badge rejected"><span class="b-dot"></span>超出上限</span>
+        </div>
+        <div class="row"><span class="lbl">用户</span>
+          <span class="badge pinned"><span class="b-dot"></span>管理员</span>
+          <span class="badge progress"><span class="b-dot"></span>待改密</span>
+          <span class="badge info"><span class="b-dot"></span>3 设备在线</span>
+        </div>
+        <div class="row"><span class="lbl">同步</span>
+          <span class="badge confirmed"><span class="b-dot"></span>已同步</span>
+          <span class="badge progress"><span class="b-dot"></span>同步中</span>
+          <span class="badge pending"><span class="b-dot"></span>离线</span>
+        </div>
+      </div>
+
+      <!-- 列表 -->
+      <div class="comp">
+        <h3>剪贴板列表项</h3>
+        <div class="clip-list">
+          <div class="clip-item pinned active">
+            <span class="pin">📌</span>
+            <div class="body">
+              <div class="text">周五 10:00 产品评审会议室：B 座 301。议程文档链接见下一条，会前请扫一下那份报价表。</div>
+              <div class="meta"><span>刚刚</span><span class="att">📎 2</span></div>
+            </div>
+            <span class="right mono">14:22</span>
+          </div>
+          <div class="clip-item pinned">
+            <span class="pin">📌</span>
+            <div class="body">
+              <div class="text">家里 Wi-Fi 密码：Qingniao-1997-Garden（大小写敏感）</div>
+              <div class="meta"><span>昨天</span></div>
+            </div>
+            <span class="right mono">21:08</span>
+          </div>
+          <div class="clip-item">
+            <span class="pin"></span>
+            <div class="body">
+              <div class="text">https://drive.klipsync.internal/reports/Q2-2026-revenue.xlsx</div>
+              <div class="meta"><span>3 分钟前</span></div>
+            </div>
+            <span class="right mono">14:19</span>
+          </div>
+          <div class="clip-item">
+            <span class="pin"></span>
+            <div class="body">
+              <div class="text empty">（仅附件）</div>
+              <div class="meta"><span>今天</span><span class="att">📎 4</span></div>
+            </div>
+            <span class="right mono">11:42</span>
+          </div>
+          <div class="clip-item">
+            <span class="pin"></span>
+            <div class="body">
+              <div class="text">爸那边说下周二要带的药：阿莫西林 + 降压片；记得去楼下药房先问有没有现货。</div>
+              <div class="meta"><span>2026-04-20</span></div>
+            </div>
+            <span class="right mono">19:30</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 迷你编辑区 ================= -->
+  <section>
+    <header>
+      <h2>编辑区（片段）</h2>
+      <span class="idx mono">05 / Editor Fragment</span>
+      <span class="desc">激活态的工具栏、文本区、附件网格、二维码面板在同一底色上用字重和 padding 建构层次。</span>
+    </header>
+
+    <div class="editor-demo">
+      <div class="tbar">
+        <div class="left">
+          <button class="btn btn-accent btn-sm">✓ 已复制</button>
+          <button class="btn btn-ghost btn-sm">📌 取消置顶</button>
+          <button class="btn btn-ghost btn-sm">清空</button>
+          <button class="btn btn-danger btn-sm">删除</button>
+        </div>
+        <div class="meta">
+          <span class="url">/c/9f2a1b-payment-report</span>
+          &nbsp;·&nbsp; <span>已保存 · 14:22</span>
+        </div>
+      </div>
+
+      <textarea spellcheck="false">周五 10:00 产品评审
+会议室：B 座 301
+议程：
+  · Q2 报价表对齐
+  · 下一迭代拆分
+  · NAS 迁移进度
+请会前扫一下附件里的那份报价表 PDF，重点在第 4 页。</textarea>
+
+      <div class="att-grid">
+        <div class="att-card">
+          <div class="thumb">PDF</div>
+          <div class="fn">Q2-price-v3.pdf</div>
+          <div class="fs">1.2 MB</div>
+        </div>
+        <div class="att-card">
+          <div class="thumb">PNG</div>
+          <div class="fn">wifi-配置截图.png</div>
+          <div class="fs">180 KB</div>
+        </div>
+      </div>
+
+      <div class="tbar">
+        <div class="meta">
+          扫码在手机上继续：
+        </div>
+        <div class="qr" title="当前剪贴板链接">
+          <!-- 装饰性 QR 码 SVG（非真实可扫） -->
+          <svg viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="25" height="25" fill="transparent"/>
+            <g fill="currentColor" style="color: var(--c-text);">
+              <!-- 三个定位方块 -->
+              <rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="var(--c-bg)"/><rect x="2" y="2" width="3" height="3"/>
+              <rect x="18" y="0" width="7" height="7"/><rect x="19" y="1" width="5" height="5" fill="var(--c-bg)"/><rect x="20" y="2" width="3" height="3"/>
+              <rect x="0" y="18" width="7" height="7"/><rect x="1" y="19" width="5" height="5" fill="var(--c-bg)"/><rect x="2" y="20" width="3" height="3"/>
+              <!-- 噪声模式 -->
+              <rect x="9" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="3" width="1" height="1"/><rect x="15" y="2" width="1" height="1"/>
+              <rect x="9" y="4" width="2" height="1"/><rect x="12" y="4" width="1" height="2"/><rect x="14" y="5" width="1" height="1"/><rect x="16" y="4" width="1" height="1"/>
+              <rect x="8" y="7" width="1" height="1"/><rect x="10" y="7" width="2" height="1"/><rect x="13" y="7" width="1" height="1"/><rect x="15" y="8" width="1" height="1"/>
+              <rect x="2" y="9" width="1" height="1"/><rect x="4" y="9" width="2" height="1"/><rect x="7" y="9" width="1" height="2"/><rect x="9" y="10" width="1" height="1"/>
+              <rect x="11" y="9" width="1" height="2"/><rect x="13" y="9" width="2" height="1"/><rect x="16" y="10" width="1" height="1"/><rect x="18" y="9" width="1" height="2"/>
+              <rect x="20" y="10" width="1" height="1"/><rect x="22" y="9" width="1" height="1"/><rect x="24" y="10" width="1" height="1"/>
+              <rect x="1" y="11" width="2" height="1"/><rect x="4" y="12" width="1" height="1"/><rect x="6" y="11" width="1" height="2"/><rect x="8" y="12" width="2" height="1"/>
+              <rect x="11" y="12" width="1" height="1"/><rect x="13" y="11" width="1" height="2"/><rect x="15" y="12" width="1" height="1"/><rect x="17" y="11" width="2" height="1"/>
+              <rect x="20" y="12" width="1" height="1"/><rect x="22" y="11" width="1" height="2"/><rect x="24" y="12" width="1" height="1"/>
+              <rect x="2" y="13" width="1" height="2"/><rect x="4" y="14" width="2" height="1"/><rect x="7" y="13" width="1" height="1"/><rect x="9" y="14" width="1" height="1"/>
+              <rect x="11" y="13" width="2" height="1"/><rect x="14" y="14" width="1" height="1"/><rect x="16" y="13" width="1" height="2"/><rect x="18" y="14" width="1" height="1"/>
+              <rect x="20" y="13" width="2" height="1"/><rect x="23" y="14" width="1" height="1"/>
+              <rect x="1" y="16" width="1" height="1"/><rect x="3" y="16" width="2" height="1"/><rect x="6" y="16" width="1" height="1"/>
+              <rect x="8" y="15" width="1" height="2"/><rect x="10" y="16" width="2" height="1"/><rect x="13" y="15" width="1" height="2"/>
+              <rect x="15" y="16" width="1" height="1"/><rect x="17" y="16" width="2" height="1"/><rect x="20" y="15" width="1" height="2"/>
+              <rect x="22" y="16" width="1" height="1"/><rect x="24" y="16" width="1" height="1"/>
+              <rect x="9" y="18" width="1" height="1"/><rect x="11" y="19" width="1" height="1"/><rect x="13" y="18" width="2" height="1"/>
+              <rect x="16" y="19" width="1" height="1"/><rect x="9" y="20" width="2" height="1"/><rect x="12" y="21" width="1" height="1"/>
+              <rect x="14" y="20" width="1" height="1"/><rect x="16" y="21" width="1" height="1"/><rect x="9" y="22" width="1" height="1"/>
+              <rect x="11" y="22" width="2" height="1"/><rect x="14" y="22" width="1" height="1"/><rect x="16" y="23" width="1" height="1"/>
+              <rect x="9" y="24" width="1" height="1"/><rect x="11" y="24" width="1" height="1"/><rect x="13" y="24" width="2" height="1"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Footer ================= -->
+  <section>
+    <header>
+      <h2>设计原则</h2>
+      <span class="idx mono">06 / Principles</span>
+    </header>
+    <div class="comp-grid">
+      <div class="comp">
+        <h3>画布是纯白，不是灰</h3>
+        <div class="t-body-sm">window 外层 <code>#F5F5F7</code>，编辑区 / 卡片 <code>#FFFFFF</code>。靠纯白内容 + 浅灰 frame 建立"这是一张作品台"的层次，不靠花哨阴影。</div>
+      </div>
+      <div class="comp">
+        <h3>紫色只在"主动作"和"信号"上</h3>
+        <div class="t-body-sm"><strong>填充紫</strong>：Logo / Primary CTA（登录、创建、确认）。<strong>Pastel 紫徽章</strong>：置顶、"已同步"反馈。正文 / 表单中不出现紫色。</div>
+      </div>
+      <div class="comp">
+        <h3>Pastel 徽章是情绪，不是装饰</h3>
+        <div class="t-body-sm">状态胶囊用粉彩（桃色 / 薄荷 / 玫红 / 琥珀 / 天蓝 / 紫），每个颜色都有唯一语义：上传中 / 已保存 / 已删除 / 保存中 / 提示 / 置顶。不随意复用。</div>
+      </div>
+      <div class="comp">
+        <h3>工具气质靠选择性 mono</h3>
+        <div class="t-body-sm">时间戳、剪贴板 ID、URL、文件大小、快捷键提示用 Geist Mono；其他一律 Geist / Inter。mono 过多会把"工具"变成"终端"。</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  const btn = document.getElementById('themeBtn');
+  const lbl = document.getElementById('themeLabel');
+  const html = document.documentElement;
+  const syncLabel = () => { lbl.textContent = html.getAttribute('data-theme') === 'dark' ? '深色' : '浅色'; };
+  // 跟随系统默认一次
+  if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    html.setAttribute('data-theme', 'dark');
+  }
+  syncLabel();
+  btn.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', next);
+    syncLabel();
+  });
+</script>
+</body>
+</html>

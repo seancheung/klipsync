@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>个人设置 · KlipSync</title>
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link href="https://fonts.bunny.net/css?family=geist:300,400,500,600,700|geist-mono:400,500|inter:400,500,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <a href="P-004-workbench.html" style="display:flex;align-items:center;gap:var(--s-3);color:inherit;text-decoration:none;">
+        <div class="mark">K</div>
+        <div class="name">KlipSync</div>
+      </a>
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <button class="icon-btn" data-toggle-theme title="切换主题">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </button>
+      <div class="user-chip">
+        <span class="avatar">S</span>
+        <span>sean</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1>个人设置</h1>
+        <div class="desc">管理你的账号信息和会话</div>
+      </div>
+      <a href="P-004-workbench.html" class="btn btn-ghost btn-sm">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        返回主工作台
+      </a>
+    </div>
+
+    <div class="section-title">账号信息</div>
+    <div class="card">
+      <div class="card-body">
+        <div class="form-row" style="align-items:center; gap: var(--s-4);">
+          <div style="width: 56px; height:56px; border-radius:50%; background: var(--c-accent-soft); color: var(--c-accent-strong); display:grid; place-items:center; font-family: var(--f-head); font-weight: 600; font-size: 22px;">S</div>
+          <div style="flex:1;">
+            <div style="font-family: var(--f-head); font-weight: 600; font-size: 16px;">sean</div>
+            <div class="mono" style="color: var(--c-text-dim); font-size: 12px; margin-top: 4px;">管理员 · 自 2026-01-12 起使用</div>
+          </div>
+          <span class="badge pinned"><span class="b-dot"></span>管理员</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">修改密码</div>
+    <div class="card">
+      <div class="card-body">
+        <form onsubmit="event.preventDefault(); klipsyncToast('密码已更新', 'success');">
+          <div class="field">
+            <label for="old">当前密码</label>
+            <input class="input" id="old" type="password" placeholder="输入当前密码" />
+          </div>
+          <div class="field">
+            <label for="new">新密码</label>
+            <input class="input" id="new" type="password" placeholder="至少 8 位" />
+            <div class="help">不能与旧密码相同</div>
+          </div>
+          <div class="field">
+            <label for="new2">确认新密码</label>
+            <input class="input" id="new2" type="password" placeholder="再输一次" />
+          </div>
+          <div style="margin-top: var(--s-4);">
+            <button type="submit" class="btn btn-primary">更新密码</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="section-title">会话</div>
+    <div class="card">
+      <div class="card-body" style="display:flex; align-items:center; justify-content:space-between; gap: var(--s-4);">
+        <div>
+          <div style="font-family: var(--f-head); font-weight: 500; font-size: 14px;">当前会话</div>
+          <div class="mono" style="color: var(--c-text-mute); font-size: 12px; margin-top: 4px;">Mac · Safari · 从 192.168.1.42 登入 · 今天 14:08</div>
+        </div>
+        <button class="btn btn-danger" data-open-modal="modal-logout">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          登出
+        </button>
+      </div>
+    </div>
+
+    <div class="section-title">管理员功能</div>
+    <div class="card">
+      <div class="card-body" style="display:flex; gap: var(--s-3);">
+        <a href="P-006-admin-users.html" class="btn btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          用户管理
+        </a>
+        <a href="P-007-admin-system.html" class="btn btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          系统设置
+        </a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-logout" style="display:none;">
+  <div class="modal">
+    <div class="modal-header"><h3>确认登出？</h3></div>
+    <div class="modal-body">登出后需要重新输入用户名和密码。"记住我" cookie 也会被清除。</div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal>取消</button>
+      <a href="P-002-login.html" class="btn btn-danger-fill">确认登出</a>
+    </div>
+  </div>
+</div>
+
+<script src="interactions.js"></script>
+</body>
+</html>

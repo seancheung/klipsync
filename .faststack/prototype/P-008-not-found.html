@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>剪贴板不存在 · KlipSync</title>
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link href="https://fonts.bunny.net/css?family=geist:300,400,500,600,700|geist-mono:400,500|inter:400,500,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="status-page">
+  <div>
+    <div class="icon-big">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" x2="19.07" y1="4.93" y2="19.07"/></svg>
+    </div>
+    <h1>此剪贴板不存在或无权访问</h1>
+    <div class="sub">
+      可能是你扫到了别人账号下的二维码，也可能这条剪贴板刚刚被另一台设备删除。<br/>
+      如果你认为这是错误，请联系管理员。
+    </div>
+    <div class="actions">
+      <a href="P-004-workbench.html" class="btn btn-primary btn-lg">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        返回主工作台
+      </a>
+    </div>
+
+    <div class="mono" style="margin-top: var(--s-8); color: var(--c-text-dim); font-size: 11px;">
+      路径：<span style="color:var(--c-text-mute);">/c/deleted-or-unauthorized-id</span>
+    </div>
+  </div>
+
+  <div style="position:fixed; top: var(--s-4); right: var(--s-4);">
+    <button class="icon-btn" data-toggle-theme title="切换主题">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+    </button>
+  </div>
+</div>
+<script src="interactions.js"></script>
+</body>
+</html>

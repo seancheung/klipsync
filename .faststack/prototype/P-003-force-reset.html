@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>修改初始密码 · KlipSync</title>
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link href="https://fonts.bunny.net/css?family=geist:300,400,500,600,700|geist-mono:400,500|inter:400,500,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="brand-large">
+      <div class="mark">K</div>
+      <h1>请设置新密码</h1>
+      <div class="sub">用户 <strong style="color:var(--c-text);">mom</strong></div>
+    </div>
+
+    <div class="alert warn" style="margin-bottom: var(--s-6);">
+      <span class="dot"></span>
+      <div class="txt">
+        <strong>你正在使用初始密码 / 已被管理员重置的密码</strong>
+        <small>按规则必须修改后才能进入系统。如需更换账号请点右下"登出"。</small>
+      </div>
+    </div>
+
+    <form onsubmit="event.preventDefault(); window.location='P-004-workbench.html';">
+      <div class="field">
+        <label for="old">当前密码（初始密码）</label>
+        <input class="input" id="old" type="password" placeholder="输入管理员给你的初始密码" />
+      </div>
+      <div class="field">
+        <label for="new">新密码</label>
+        <input class="input" id="new" type="password" placeholder="至少 8 位，不能与旧密码相同" />
+        <div class="help">使用字母 + 数字，推荐 12 位以上</div>
+      </div>
+      <div class="field">
+        <label for="new2">确认新密码</label>
+        <input class="input error" id="new2" type="password" value="12345" />
+        <div class="help error">两次输入不一致</div>
+      </div>
+
+      <div class="submit-row">
+        <button class="btn btn-primary btn-lg" type="submit">设置新密码并继续</button>
+      </div>
+    </form>
+
+    <div class="alt-row">
+      <a href="P-002-login.html">登出此账号</a>
+    </div>
+  </div>
+
+  <div style="position:fixed; top: var(--s-4); right: var(--s-4);">
+    <button class="icon-btn" data-toggle-theme title="切换主题">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+    </button>
+  </div>
+</div>
+<script src="interactions.js"></script>
+</body>
+</html>

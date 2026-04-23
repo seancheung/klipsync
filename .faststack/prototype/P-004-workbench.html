@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>主工作台 · KlipSync</title>
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link href="https://fonts.bunny.net/css?family=geist:300,400,500,600,700|geist-mono:400,500|inter:400,500,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ================= TopBar ================= -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="mark">K</div>
+      <div class="name">KlipSync</div>
+    </div>
+    <div class="topbar-search" role="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      <span>搜索剪贴板…</span>
+      <span class="kbd-hint"><span class="kbd" style="background:transparent;border-color:var(--c-line-strong);color:var(--c-text-dim);">⌘ K</span></span>
+    </div>
+    <div class="topbar-spacer"></div>
+    <div class="topbar-actions">
+      <button class="icon-btn" data-toggle-theme title="切换主题">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+      </button>
+      <button class="icon-btn" title="通知">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+      </button>
+      <div class="user-chip">
+        <span class="avatar">S</span>
+        <span>sean</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= Workbench ================= -->
+  <div class="workbench">
+
+    <!-- ============ 左栏 ClipList ============ -->
+    <aside class="cliplist-col">
+      <div class="cliplist-head">
+        <div>
+          <h2>我的空间<span class="count mono">5 条 · 2 置顶</span></h2>
+        </div>
+        <button class="btn btn-ghost btn-sm" data-mobile="to-editor" title="新建剪贴板">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          新建
+          <span class="kbd" style="background:transparent;border-color:var(--c-line-strong);">⌘ N</span>
+        </button>
+      </div>
+
+      <div class="cliplist">
+        <div class="clip-item pinned active" data-mobile="to-editor">
+          <span class="pin">📌</span>
+          <div class="body">
+            <div class="text">周五 10:00 产品评审
+会议室：B 座 301。议程文档链接见下一条，会前请扫一下那份报价表。</div>
+            <div class="meta"><span>刚刚</span><span>📎 2</span></div>
+          </div>
+          <span class="right mono">14:22</span>
+        </div>
+
+        <div class="clip-item pinned" data-mobile="to-editor">
+          <span class="pin">📌</span>
+          <div class="body">
+            <div class="text">家里 Wi-Fi 密码：Qingniao-1997-Garden（大小写敏感，5G 频段 SSID 带 _5G 后缀）</div>
+            <div class="meta"><span>昨天</span></div>
+          </div>
+          <span class="right mono">21:08</span>
+        </div>
+
+        <div class="clip-item" data-mobile="to-editor">
+          <span class="pin"></span>
+          <div class="body">
+            <div class="text">https://drive.klipsync.internal/reports/Q2-2026-revenue.xlsx</div>
+            <div class="meta"><span>3 分钟前</span></div>
+          </div>
+          <span class="right mono">14:19</span>
+        </div>
+
+        <div class="clip-item" data-mobile="to-editor">
+          <span class="pin"></span>
+          <div class="body">
+            <div class="text empty">（仅附件）</div>
+            <div class="meta"><span>今天</span><span>📎 4</span></div>
+          </div>
+          <span class="right mono">11:42</span>
+        </div>
+
+        <div class="clip-item" data-mobile="to-editor">
+          <span class="pin"></span>
+          <div class="body">
+            <div class="text">爸那边说下周二要带的药：阿莫西林 + 降压片；记得去楼下药房先问有没有现货，周三早上 8 点前取回。</div>
+            <div class="meta"><span>2026-04-20</span></div>
+          </div>
+          <span class="right mono">19:30</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ============ 右栏 Editor ============ -->
+    <main class="editor-col">
+
+      <!-- Toolbar -->
+      <div class="editor-toolbar">
+        <div class="left">
+          <button class="btn btn-ghost btn-sm" data-mobile="to-list" title="返回列表" style="display:none;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+          </button>
+          <button class="btn btn-ghost btn-sm" data-copy title="复制文本 · ⌘ ⇧ C">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            <span class="btn-label">复制文本</span>
+            <span class="kbd">⌘ ⇧ C</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" title="取消置顶">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1"><path d="M12 2 14 8H20L15 12L17 19L12 15L7 19L9 12L4 8H10Z" style="color:var(--c-accent)"/></svg>
+            <span class="btn-label">已置顶</span>
+          </button>
+          <button class="btn btn-ghost btn-sm" data-open-modal="modal-clear" title="清空当前剪贴板">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+            <span class="btn-label">清空</span>
+          </button>
+          <button class="btn btn-danger btn-sm" data-open-modal="modal-delete" title="删除整条剪贴板">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="m19 6-2 14H7L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+            <span class="btn-label">删除</span>
+          </button>
+        </div>
+        <div class="meta">
+          <span class="status-icon confirmed" title="已保存 · 14:22">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </span>
+          <button class="btn btn-ghost btn-sm" data-drawer-toggle="drawerAtts" title="查看附件">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 17.93 8.8l-8.58 8.57a2 2 0 1 1-2.83-2.83l8.49-8.48"/></svg>
+            <span class="btn-label">附件</span>
+            <span class="count-badge">6</span>
+          </button>
+          <div class="qr-popover-wrap">
+            <button class="icon-btn" data-qr-toggle="qrPopover" title="扫码在另一设备打开">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1"/>
+                <rect x="14" y="3" width="7" height="7" rx="1"/>
+                <rect x="3" y="14" width="7" height="7" rx="1"/>
+                <path d="M14 14h3v3h-3z"/>
+                <path d="M20 14h1"/>
+                <path d="M14 20h1"/>
+                <path d="M20 17v4"/>
+                <path d="M17 20h4"/>
+              </svg>
+            </button>
+            <div class="qr-popover" id="qrPopover">
+              <div class="qr-img">
+                <svg viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <rect width="25" height="25" fill="#FFFFFF"/>
+                  <g fill="#171629">
+                    <rect x="0" y="0" width="7" height="7"/><rect x="1" y="1" width="5" height="5" fill="#FFFFFF"/><rect x="2" y="2" width="3" height="3"/>
+                    <rect x="18" y="0" width="7" height="7"/><rect x="19" y="1" width="5" height="5" fill="#FFFFFF"/><rect x="20" y="2" width="3" height="3"/>
+                    <rect x="0" y="18" width="7" height="7"/><rect x="1" y="19" width="5" height="5" fill="#FFFFFF"/><rect x="2" y="20" width="3" height="3"/>
+                    <rect x="9" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="3" width="1" height="1"/><rect x="15" y="2" width="1" height="1"/>
+                    <rect x="9" y="4" width="2" height="1"/><rect x="12" y="4" width="1" height="2"/><rect x="14" y="5" width="1" height="1"/><rect x="16" y="4" width="1" height="1"/>
+                    <rect x="8" y="7" width="1" height="1"/><rect x="10" y="7" width="2" height="1"/><rect x="13" y="7" width="1" height="1"/><rect x="15" y="8" width="1" height="1"/>
+                    <rect x="2" y="9" width="1" height="1"/><rect x="4" y="9" width="2" height="1"/><rect x="7" y="9" width="1" height="2"/><rect x="9" y="10" width="1" height="1"/>
+                    <rect x="11" y="9" width="1" height="2"/><rect x="13" y="9" width="2" height="1"/><rect x="16" y="10" width="1" height="1"/><rect x="18" y="9" width="1" height="2"/>
+                    <rect x="20" y="10" width="1" height="1"/><rect x="22" y="9" width="1" height="1"/><rect x="24" y="10" width="1" height="1"/>
+                    <rect x="1" y="11" width="2" height="1"/><rect x="4" y="12" width="1" height="1"/><rect x="6" y="11" width="1" height="2"/><rect x="8" y="12" width="2" height="1"/>
+                    <rect x="11" y="12" width="1" height="1"/><rect x="13" y="11" width="1" height="2"/><rect x="15" y="12" width="1" height="1"/><rect x="17" y="11" width="2" height="1"/>
+                    <rect x="20" y="12" width="1" height="1"/><rect x="22" y="11" width="1" height="2"/><rect x="24" y="12" width="1" height="1"/>
+                    <rect x="2" y="13" width="1" height="2"/><rect x="4" y="14" width="2" height="1"/><rect x="7" y="13" width="1" height="1"/><rect x="9" y="14" width="1" height="1"/>
+                    <rect x="11" y="13" width="2" height="1"/><rect x="14" y="14" width="1" height="1"/><rect x="16" y="13" width="1" height="2"/><rect x="18" y="14" width="1" height="1"/>
+                    <rect x="20" y="13" width="2" height="1"/><rect x="23" y="14" width="1" height="1"/>
+                    <rect x="1" y="16" width="1" height="1"/><rect x="3" y="16" width="2" height="1"/><rect x="6" y="16" width="1" height="1"/>
+                    <rect x="8" y="15" width="1" height="2"/><rect x="10" y="16" width="2" height="1"/><rect x="13" y="15" width="1" height="2"/>
+                    <rect x="15" y="16" width="1" height="1"/><rect x="17" y="16" width="2" height="1"/><rect x="20" y="15" width="1" height="2"/>
+                    <rect x="22" y="16" width="1" height="1"/><rect x="24" y="16" width="1" height="1"/>
+                    <rect x="9" y="18" width="1" height="1"/><rect x="11" y="19" width="1" height="1"/><rect x="13" y="18" width="2" height="1"/>
+                    <rect x="16" y="19" width="1" height="1"/><rect x="9" y="20" width="2" height="1"/><rect x="12" y="21" width="1" height="1"/>
+                    <rect x="14" y="20" width="1" height="1"/><rect x="16" y="21" width="1" height="1"/><rect x="9" y="22" width="1" height="1"/>
+                    <rect x="11" y="22" width="2" height="1"/><rect x="14" y="22" width="1" height="1"/><rect x="16" y="23" width="1" height="1"/>
+                    <rect x="9" y="24" width="1" height="1"/><rect x="11" y="24" width="1" height="1"/><rect x="13" y="24" width="2" height="1"/>
+                  </g>
+                </svg>
+              </div>
+              <div class="qr-caption">扫码在另一设备打开</div>
+              <div class="qr-sub">用手机系统相机扫此二维码，登录同一账号后即可编辑这条剪贴板。</div>
+              <span class="qr-url">klipsync.local/c/9f2a1b-payment-report</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Editor body: textarea 撑满 + 底部附件 chip 行 -->
+      <div class="editor-body">
+
+        <!-- 如需演示"已被删除"横幅，取消下方注释 -->
+        <!--
+        <div class="alert danger">
+          <span class="dot"></span>
+          <div class="txt">
+            <strong>此剪贴板已被删除（由其他设备）</strong>
+            <small>可以把当前草稿保存为新剪贴板，或返回列表。</small>
+          </div>
+          <div class="actions">
+            <button class="btn btn-secondary btn-sm">保存为新条目</button>
+            <button class="btn btn-ghost btn-sm">返回列表</button>
+          </div>
+        </div>
+        -->
+
+        <textarea class="editor-textarea" spellcheck="false">周五 10:00 产品评审
+会议室：B 座 301
+
+议程：
+  · Q2 报价表对齐（附件 PDF，重点看第 4 页）
+  · 下一迭代拆分
+  · NAS 迁移进度
+
+备注：
+小王那边说他要先去拿上周五的打印合同，晚 10 分钟到；
+给阿姨发过住址了，她会带两盒绿豆糕过来，记得拍照发家庭群。
+
+会后请把确认的排期贴回这里，统一对齐。</textarea>
+
+      </div>
+
+      <!-- ============ 附件抽屉（默认关闭） ============ -->
+      <aside class="att-drawer" id="drawerAtts" aria-label="附件抽屉">
+        <div class="att-drawer-header">
+          <h3>附件<span class="c mono">6 · 10.5 MB</span></h3>
+          <button class="icon-btn" data-drawer-close title="关闭">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="att-drawer-body">
+
+          <div class="att-row">
+            <div class="ext-box">PDF</div>
+            <div class="info">
+              <div class="fn" title="Q2-price-v3.pdf">Q2-price-v3.pdf</div>
+              <div class="fs">1.2 MB</div>
+            </div>
+            <div class="row-actions">
+              <button class="icon-btn" title="下载">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              </button>
+              <button class="icon-btn" title="删除附件" style="color: var(--c-danger);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="m19 6-2 14H7L5 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="att-row">
+            <div class="ext-box">PNG</div>
+            <div class="info">
+              <div class="fn" title="wifi-配置截图.png">wifi-配置截图.png</div>
+              <div class="fs">180 KB</div>
+            </div>
+            <div class="row-actions">
+              <button class="icon-btn" title="下载">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              </button>
+              <button class="icon-btn" title="删除附件" style="color: var(--c-danger);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="m19 6-2 14H7L5 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="att-row uploading">
+            <div class="ext-box">XLSX</div>
+            <div class="info">
+              <div class="fn" title="2026-Q2-产品评审-议程与排期-final-v3.xlsx">2026-Q2-产品评审-议程与排期-final-v3.xlsx</div>
+              <div class="fs">上传中 · 42%</div>
+            </div>
+            <div class="row-actions">
+              <button class="icon-btn" title="取消上传" style="color: var(--c-peach);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+              </button>
+            </div>
+            <div class="progress-bar"><div class="fill" style="width:42%"></div></div>
+          </div>
+
+          <div class="att-row">
+            <div class="ext-box">MD</div>
+            <div class="info">
+              <div class="fn" title="meeting-notes.md">meeting-notes.md</div>
+              <div class="fs">4.2 KB</div>
+            </div>
+            <div class="row-actions">
+              <button class="icon-btn" title="下载">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              </button>
+              <button class="icon-btn" title="删除附件" style="color: var(--c-danger);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="m19 6-2 14H7L5 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="att-row">
+            <div class="ext-box">JPG</div>
+            <div class="info">
+              <div class="fn" title="IMG_20260422_141902.jpg">IMG_20260422_141902.jpg</div>
+              <div class="fs">2.8 MB</div>
+            </div>
+            <div class="row-actions">
+              <button class="icon-btn" title="下载">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              </button>
+              <button class="icon-btn" title="删除附件" style="color: var(--c-danger);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="m19 6-2 14H7L5 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="att-row">
+            <div class="ext-box">ZIP</div>
+            <div class="info">
+              <div class="fn" title="设计资产-交付包.zip">设计资产-交付包.zip</div>
+              <div class="fs">6.1 MB</div>
+            </div>
+            <div class="row-actions">
+              <button class="icon-btn" title="下载">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              </button>
+              <button class="icon-btn" title="删除附件" style="color: var(--c-danger);">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="m19 6-2 14H7L5 6"/></svg>
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="att-drawer-footer">
+          <button class="att-add-big" title="添加附件">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" x2="12" y1="3" y2="15"/></svg>
+            <strong>粘贴、拖放或点击选择附件</strong>
+            <small>单文件 ≤ 10 MB · 任意类型</small>
+          </button>
+        </div>
+      </aside>
+
+    </main>
+  </div>
+</div>
+
+<!-- ================= Modals ================= -->
+<div class="modal-backdrop" id="modal-clear" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>确认清空此剪贴板？</h3>
+    </div>
+    <div class="modal-body">
+      文本和所有附件将被删除，<strong>剪贴板本身保留</strong>，ID 不变，其他设备会秒级同步这次清空。该操作不可撤销。
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal>取消</button>
+      <button class="btn btn-danger-fill" data-close-modal>确认清空</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modal-delete" style="display:none;">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>确认删除此剪贴板？</h3>
+    </div>
+    <div class="modal-body">
+      该剪贴板的文本、所有附件、以及此 URL 本身都会被永久删除；正在另一端打开它的用户会看到"此剪贴板已被删除"提示。该操作<strong>不可撤销</strong>。
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" data-close-modal>取消</button>
+      <button class="btn btn-danger-fill" data-close-modal>确认删除</button>
+    </div>
+  </div>
+</div>
+
+<script src="interactions.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>登录 · KlipSync</title>
+<link rel="preconnect" href="https://fonts.bunny.net" />
+<link href="https://fonts.bunny.net/css?family=geist:300,400,500,600,700|geist-mono:400,500|inter:400,500,600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="brand-large">
+      <div class="mark">K</div>
+      <h1>登录 KlipSync</h1>
+      <div class="sub">家庭 NAS 上的共享剪贴板</div>
+    </div>
+
+    <form onsubmit="event.preventDefault(); window.location='P-004-workbench.html';">
+      <div class="field">
+        <label for="u">用户名</label>
+        <input class="input" id="u" type="text" placeholder="输入用户名" value="sean" />
+      </div>
+      <div class="field">
+        <label for="p">密码</label>
+        <input class="input" id="p" type="password" placeholder="输入密码" />
+      </div>
+
+      <div class="form-row" style="margin-top: var(--s-4); justify-content: space-between;">
+        <label class="checkbox"><input type="checkbox" checked /> 记住我（长期 Cookie）</label>
+        <a href="#" style="font-size: 13px;">联系管理员重置</a>
+      </div>
+
+      <div class="submit-row">
+        <button class="btn btn-primary btn-lg" type="submit">登录</button>
+      </div>
+    </form>
+
+    <div class="alt-row">
+      还没有账号？请联系管理员为你开通。
+    </div>
+  </div>
+
+  <div style="position:fixed; top: var(--s-4); right: var(--s-4);">
+    <button class="icon-btn" data-toggle-theme title="切换主题">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+    </button>
+  </div>
+</div>
+<script src="interactions.js"></script>
+</body>
+</html>
