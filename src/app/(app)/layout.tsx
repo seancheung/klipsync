@@ -32,7 +32,7 @@ export default async function AppLayout({
   return (
     <QueryProvider>
       <SSEProvider>
-        <div className="flex min-h-dvh flex-col pb-safe">
+        <div className="flex h-dvh flex-col overflow-hidden pb-safe">
           <TopBar user={userBasic} />
           <div className="flex flex-1 min-h-0">{children}</div>
         </div>

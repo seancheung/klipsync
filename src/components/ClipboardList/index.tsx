@@ -76,6 +76,11 @@ export function ClipboardList({ activeId }: { activeId?: string | null }) {
             type="button"
             onClick={() => {
               close();
+              // 草稿创建后用 history.replaceState 偷偷把 URL 改成 /c/<id>，
+              // Next 路由内部仍认为在 /c/new。直接 router.push("/c/new") 会被
+              // 视为同路由 no-op，Workbench 不会重置。广播一个事件，让 Workbench
+              // 显式 flush + 重置 state，再 push 兜底。
+              window.dispatchEvent(new CustomEvent("klipsync:reset-draft"));
               router.push("/c/new");
             }}
             className="inline-flex h-7 items-center gap-s-1 rounded-md px-s-3 font-head text-[12px] font-medium text-text-mute transition-colors hover:bg-bg-sunk hover:text-text"

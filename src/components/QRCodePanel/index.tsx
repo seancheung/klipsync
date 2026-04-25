@@ -5,6 +5,8 @@ import { QRCodeSVG } from "qrcode.react";
 import { Link as LinkIcon, QrCode } from "lucide-react";
 import { toast } from "sonner";
 
+import { copyText } from "@/lib/clipboard/copy";
+
 /**
  * QR 面板 —— FR-040 / product.md §4.9
  * 悬浮按钮 + 点击展开小面板，包含当前剪贴板 URL 的 QR 码 + 复制链接按钮。
@@ -26,12 +28,9 @@ export function QRCodePanel({ url }: { url: string }) {
   }, [open]);
 
   async function copy() {
-    try {
-      await navigator.clipboard.writeText(url);
-      toast.success("链接已复制");
-    } catch {
-      toast.error("复制失败");
-    }
+    const ok = await copyText(url);
+    if (ok) toast.success("链接已复制");
+    else toast.error("复制失败");
   }
 
   return (

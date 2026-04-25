@@ -76,14 +76,22 @@ function openConnection(): void {
   }
 }
 
-/** 显式关闭连接（登出 / session.revoked） —— 会立刻把 status 切到 'closed' */
+/** 显式关闭连接（登出 / session.revoked / 页面离焦） —— 会立刻把 status 切到 'closed' */
 export function closeSSEConnection(): void {
   if (eventSource) {
     eventSource.close();
     eventSource = null;
   }
-  refCount = 0;
   useSSEStatus.getState().setStatus("closed");
+}
+
+/**
+ * 幂等重开连接 —— 用于页面聚焦时恢复同步。
+ * 如果已经有连接则直接返回；否则按现有逻辑打开 EventSource。
+ * 注意：不修改 refCount —— 它由 useSSEConnection 管理 Provider 生命周期。
+ */
+export function reopenSSEConnection(): void {
+  openConnection();
 }
 
 /**

@@ -33,6 +33,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { useClipboardDetailSync } from "@/hooks/useClipboardSync";
 import { ApiClientError, apiGet, apiJson } from "@/lib/api/client";
 import type { ClipboardDetail } from "@/lib/api/types";
+import { copyText } from "@/lib/clipboard/copy";
 import { useActiveClipboard } from "@/lib/store/active-clipboard";
 import { cn } from "@/lib/utils";
 
@@ -257,6 +258,35 @@ export function ClipboardWorkbench({ initial, maxMb, origin }: Props) {
     };
   }, []);
 
+  // 列表「新建」按钮广播：flush 未保存内容 → 重置到草稿态 → URL 同步回 /c/new。
+  // 用事件而非 router 切换，因为草稿创建后用 history.replaceState 改了 URL，
+  // Next 路由内部仍认为当前在 /c/new，router.push("/c/new") 会被视为 no-op。
+  useEffect(() => {
+    function onReset() {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+        debounceTimer.current = null;
+      }
+      const snap = snapRef.current;
+      if (snap.clipboardId !== null && snap.text !== snap.lastSavedText) {
+        void snap.persistText(snap.text, snap.clipboardId);
+      }
+      setClipboardId(null);
+      setText("");
+      setLastSavedText("");
+      setPrevDetailText(null);
+      setPinnedAt(null);
+      setPrevDetailPinned(null);
+      setSaveState("draft");
+      setDrawerOpen(false);
+      if (typeof window !== "undefined") {
+        window.history.replaceState(null, "", "/c/new");
+      }
+    }
+    window.addEventListener("klipsync:reset-draft", onReset);
+    return () => window.removeEventListener("klipsync:reset-draft", onReset);
+  }, []);
+
   // 草稿态：全局 paste 捕获文件 → 创建后合并上传（已保存态由 AttachmentDrawer 接管）
   useEffect(() => {
     if (clipboardId !== null) return;
@@ -348,12 +378,9 @@ export function ClipboardWorkbench({ initial, maxMb, origin }: Props) {
   });
 
   async function handleCopy() {
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success("已复制到剪贴板");
-    } catch {
-      toast.error("复制失败");
-    }
+    const ok = await copyText(text);
+    if (ok) toast.success("已复制到剪贴板");
+    else toast.error("复制失败");
   }
 
   const isDraft = clipboardId === null;
@@ -474,8 +501,8 @@ export function ClipboardWorkbench({ initial, maxMb, origin }: Props) {
         </div>
       </div>
 
-      {/* Editor body */}
-      <div className="flex min-h-0 flex-1 flex-col gap-s-3 px-s-3 py-s-3 md:px-s-6 md:py-s-4">
+      {/* Editor body —— 父容器 overflow-y-auto：当窗口 < textarea min-h(400px) 时，由本容器滚动而非裁掉下半部分 */}
+      <div className="flex min-h-0 flex-1 flex-col gap-s-3 overflow-y-auto px-s-3 py-s-3 md:px-s-6 md:py-s-4">
         <textarea
           autoFocus
           spellCheck={false}
@@ -488,7 +515,7 @@ export function ClipboardWorkbench({ initial, maxMb, origin }: Props) {
               ? "输入文本、粘贴或拖入附件即可创建一条新剪贴板，并同步到其他登录设备。"
               : "在这里输入或粘贴内容，将自动保存并实时同步到其他登录设备。"
           }
-          className="min-h-[240px] flex-1 resize-none rounded-lg border border-line-strong bg-bg-raise px-s-4 py-s-4 font-body text-[15px] leading-[1.65] text-text outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-text-dim focus:border-accent focus:shadow-[0_0_0_3px_var(--c-accent-soft)]"
+          className="min-h-[400px] flex-1 resize-none rounded-lg border border-line-strong bg-bg-raise px-s-4 py-s-4 font-body text-[15px] leading-[1.65] text-text outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-text-dim focus:border-accent focus:shadow-[0_0_0_3px_var(--c-accent-soft)]"
         />
       </div>
 
