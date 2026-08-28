@@ -15,7 +15,8 @@ export const runtime = "nodejs";
 type Params = { id: string };
 
 // GET /api/attachments/:id/download —— FR-019
-export const GET = withErrorBoundary<Params>(async (_req, ctx) => {
+// 图片可通过 ?inline=1 在浏览器中直接查看，其他类型始终作为附件下载。
+export const GET = withErrorBoundary<Params>(async (req, ctx) => {
   const { user } = await requireUser();
   const { id } = await ctx.params;
   await requireOwnedAttachment(user.id, id);
@@ -45,14 +46,19 @@ export const GET = withErrorBoundary<Params>(async (_req, ctx) => {
 
   // RFC 5987 filename* 编码，保证中文/非 ASCII 文件名正确
   const encoded = encodeURIComponent(row.filename).replace(/['()]/g, escape);
+  const inline =
+    req.nextUrl.searchParams.get("inline") === "1" &&
+    row.mimeType.startsWith("image/");
 
   return new Response(webStream, {
     status: 200,
     headers: {
       "Content-Type": row.mimeType || "application/octet-stream",
       "Content-Length": String(row.sizeBytes),
-      "Content-Disposition": `attachment; filename*=UTF-8''${encoded}`,
+      "Content-Disposition": `${inline ? "inline" : "attachment"}; filename*=UTF-8''${encoded}`,
       "Cache-Control": "private, no-store",
+      "X-Content-Type-Options": "nosniff",
+      ...(inline ? { "Content-Security-Policy": "sandbox" } : {}),
     },
   });
 });

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Download, FileUp, Trash2, X } from "lucide-react";
+import { Download, Eye, FileUp, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 import {
@@ -236,6 +236,13 @@ export function AttachmentDrawer({
           <AttachmentRow
             key={a.id}
             att={a}
+            onView={() => {
+              window.open(
+                `/api/attachments/${a.id}/download?inline=1`,
+                "_blank",
+                "noopener,noreferrer",
+              );
+            }}
             onDownload={() => {
               window.location.href = `/api/attachments/${a.id}/download`;
             }}
@@ -355,10 +362,12 @@ export function AttachmentDrawer({
 
 function AttachmentRow({
   att,
+  onView,
   onDownload,
   onDelete,
 }: {
   att: AttachmentMeta;
+  onView: () => void;
   onDownload: () => void;
   onDelete: () => void;
 }) {
@@ -376,6 +385,16 @@ function AttachmentRow({
         </div>
       </div>
       <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100 group-focus-within:opacity-100">
+        {att.mime_type.startsWith("image/") && (
+          <button
+            type="button"
+            onClick={onView}
+            className="grid h-7 w-7 place-items-center rounded-md text-text-mute hover:bg-bg-raise hover:text-text"
+            title="查看"
+          >
+            <Eye className="h-3.5 w-3.5" />
+          </button>
+        )}
         <button
           type="button"
           onClick={onDownload}
